@@ -3,80 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>비상장 주식 거래 플랫폼 - 청약</title>
-  <style>
-    .stock-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .stock-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .stock-item img {
-      width: 40px;
-      height: 40px;
-    }
-
-    .stock-item h3 {
-      margin: 0;
-    }
-
-    .stock-item p {
-      margin: 0;
-      font-size: 14px;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <h1>청약 목록</h1>
-  <div id="stock-list" class="stock-list"></div>
-
+  <title>청약 페이지</title>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const token = localStorage.getItem('token');
-      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null;
-
-      if (username) {
-        // 주식 목록을 조회하는 API 호출
-        fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`)
-          .then(response => response.json())
-          .then(data => {
-            const stockListContainer = document.getElementById('stock-list');
-            if (data.stocks && data.stocks.length > 0) {
-              data.stocks.forEach(stock => {
-                const stockItem = document.createElement('div');
-                stockItem.classList.add('stock-item');
-                stockItem.innerHTML = `
-                  <img src="${stock.image}" alt="${stock.name}">
-                  <h3>${stock.name}</h3>
-                  <p>가격: ${stock.price}원</p>
-                `;
-                stockListContainer.appendChild(stockItem);
-              });
-            } else {
-              stockListContainer.innerHTML = '<p>현재 거래 가능한 주식이 없습니다.</p>';
-            }
-          })
-          .catch(error => {
-            console.error('주식 목록 조회 오류:', error);
-            alert('주식 목록을 가져오는 데 문제가 발생했습니다.');
-          });
+      if (!token) {
+        alert('로그인 후 청약 페이지를 이용할 수 있습니다.');
+        window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
       } else {
-        alert('로그인 후 이용해 주세요.');
-        window.location.href = 'login.html';
+        const { username } = JSON.parse(atob(token.split('.')[1]));
+        document.getElementById('username').textContent = `${username}님, 환영합니다!`;
       }
     });
+
+    function logout() {
+      localStorage.removeItem('token');
+      alert('로그아웃되었습니다.');
+      window.location.href = 'login.html';
+    }
   </script>
+</head>
+<body>
+  <h1>청약 페이지</h1>
+  <p id="username"></p>  <!-- 로그인한 사용자 이름 표시 -->
+  <button onclick="logout()">로그아웃</button>
 </body>
 </html>
