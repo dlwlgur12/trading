@@ -82,7 +82,7 @@ app.get('/api/mybalance', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const username = decoded.username;
 
-    // User 모델에서 해당 사용자 정보를 찾고, 그 안의 stocks 필드 조회
+    // User 컬렉션에서 주식 목록 조회
     const user = await User.findOne({ username });
 
     if (user && user.stocks && user.stocks.length > 0) {
@@ -92,9 +92,10 @@ app.get('/api/mybalance', async (req, res) => {
     }
   } catch (error) {
     console.error('청약 목록 오류:', error);
-    res.status(500).json({ message: '청약 목록 불러오기 실패', error: error.message });
+    res.status(500).json({ message: '청약 목록 불러오기 실패', error });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`서버가 http://localhost:${port}에서 실행 중입니다.`);

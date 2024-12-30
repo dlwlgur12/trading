@@ -63,30 +63,32 @@
     'Authorization': `Bearer ${token}`,
   },
 })
-  .then(response => response.json())
-  .then(data => {
-    const stockListContainer = document.getElementById('stock-list');
-    if (data.stocks && data.stocks.length > 0) {
-      data.stocks.forEach(stock => {
-        const stockItem = document.createElement('div');
-        stockItem.classList.add('stock-item');
-        stockItem.innerHTML = `
-          <img src="${stock.logoUrl}" alt="${stock.stockName} 로고">
-          <div>
-            <h3>${stock.stockName}</h3>
-            <p>청약금액: ${stock.assetValue}</p>
-            <p>보유수량: ${stock.quantity}</p>
-          </div>
-        `;
-        stockListContainer.appendChild(stockItem);
-      });
-    } else {
-      stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
-    }
-  })
-  .catch(error => {
-    console.error('주식 목록 불러오기 오류:', error);
-  });
+.then(response => response.json())
+.then(data => {
+  console.log('받은 데이터:', data);  // 데이터를 제대로 받았는지 확인
+  const stockListContainer = document.getElementById('stock-list');
+  if (data.stocks && data.stocks.length > 0) {
+    data.stocks.forEach(stock => {
+      const stockItem = document.createElement('div');
+      stockItem.classList.add('stock-item');
+      stockItem.innerHTML = `
+        <img src="${stock.logoUrl}" alt="${stock.stockName} 로고">
+        <div>
+          <h3>${stock.stockName}</h3>
+          <p>청약금액: ${stock.assetValue}</p>
+          <p>보유수량: ${stock.quantity}</p>
+        </div>
+      `;
+      stockListContainer.appendChild(stockItem);
+    });
+  } else {
+    stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
+  }
+})
+.catch(error => {
+  console.error('주식 목록 불러오기 오류:', error);
+});
+
 
         } catch (error) {
           console.error('JWT 디코딩 오류:', error);
