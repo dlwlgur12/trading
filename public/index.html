@@ -8,6 +8,7 @@
     body {
       font-family: 'Arial', sans-serif;
       background-color: #f4f7fc;
+      color: #333;
       margin: 0;
       padding: 0;
       display: flex;
@@ -18,66 +19,127 @@
       text-align: center;
     }
     h1 {
+      font-size: 3rem;
       color: #2c3e50;
       margin-bottom: 30px;
     }
     #welcome-message {
+      font-size: 1.5rem;
       color: #2980b9;
       margin-bottom: 20px;
     }
-    .button-container button {
-      padding: 10px 20px;
-      background-color: #3498db;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
     }
-    .button-container button:hover {
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      width: 250px;
+      transition: all 0.3s ease;
+    }
+    button:hover {
       background-color: #2980b9;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .logout-btn {
+      background-color: #e74c3c;
+    }
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+    .platform-logo {
+      width: 120px;
+      margin-bottom: 40px;
+    }
+    .content {
+      max-width: 800px;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+      text-align: left;
+      color: #34495e;
+    }
+    nav {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100%;
+      text-align: center;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    nav a {
+      color: #2980b9;
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #2c3e50;
     }
   </style>
   <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  const welcomeMessage = document.getElementById('welcome-message');
-  const buttonContainer = document.querySelector('.button-container');
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const welcomeMessage = document.getElementById('welcome-message');
+      const buttonContainer = document.querySelector('.button-container');
 
-  if (token) {
-    try {
-      const base64Payload = token.split('.')[1]; // JWT의 payload 부분만 가져옴
-      const payload = JSON.parse(atob(base64Payload)); // Base64 디코딩
-      const name = decodeURIComponent(payload.name); // UTF-8 디코딩
+      if (token) {
+        const base64Payload = token.split('.')[1];
+        const payload = JSON.parse(atob(base64Payload));
+        const name = decodeURIComponent(payload.name);
+        welcomeMessage.textContent = `${name}님 반갑습니다!`;
+        buttonContainer.innerHTML = `<button class="logout-btn" onclick="logout()">로그아웃</button>`;
+      } else {
+        welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
+        buttonContainer.innerHTML = `
+          <button onclick="window.location.href='login.html'">로그인</button>
+          <button onclick="window.location.href='signup.html'">회원가입</button>
+        `;
+      }
+    });
 
-      console.log('Decoded Name:', name); // 디버깅용 콘솔 출력
-      welcomeMessage.textContent = `${name}님 반갑습니다!`;
-      buttonContainer.innerHTML = `
-        <button onclick="logout()">로그아웃</button>
-      `;
-    } catch (error) {
-      console.error('JWT 디코딩 오류:', error);
-      welcomeMessage.textContent = '토큰 처리 중 문제가 발생했습니다.';
+    function logout() {
+      localStorage.removeItem('token');
+      alert('로그아웃되었습니다.');
+      window.location.reload();
     }
-  } else {
-    welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
-    buttonContainer.innerHTML = `
-      <button onclick="location.href='login.html'">로그인</button>
-      <button onclick="location.href='signup.html'">회원가입</button>
-    `;
-  }
-});
-
-function logout() {
-  localStorage.removeItem('token');
-  alert('로그아웃되었습니다.');
-  window.location.reload();
-}
-
   </script>
 </head>
 <body>
+  <img src="logo.png" alt="Platform Logo" class="platform-logo">
   <h1>비상장 주식 거래 플랫폼</h1>
+
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="/balance.html">my청약</a></li>
+    </ul>
+  </nav>
+
   <div id="welcome-message"></div>
   <div class="button-container"></div>
+
+  <div class="content">
+    <h2>비상장 주식 거래를 시작해보세요!</h2>
+    <p>로그인 후, 다양한 비상장 주식에 대한 정보를 확인하고 거래를 시작할 수 있습니다.</p>
+  </div>
 </body>
 </html>
