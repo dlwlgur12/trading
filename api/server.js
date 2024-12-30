@@ -30,7 +30,7 @@ app.use(bodyParser.json());  // JSON 형식의 요청 본문 처리
 app.use(bodyParser.urlencoded({ extended: true })); // URL-encoded 형식 처리
 
 // 회원가입 처리 라우트
-app.post('api/signup', async (req, res) => {
+app.post('/api/signup', async (req, res) => {  // 경로를 '/api/signup'으로 수정
   try {
     const { username, password, name, birth, email, phone, brokerage, account } = req.body;
 
