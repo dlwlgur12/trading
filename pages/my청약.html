@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My 청약 - 비상장 주식 거래 플랫폼</title>
+  <style>
+    /* CSS 스타일은 이전에 제공된 것과 동일 */
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('로그인 후 이용해주세요.');
+        window.location.href = 'login.html'; // 로그인 페이지로 리다이렉트
+        return;
+      }
+
+      const response = await fetch('https://trading-pearl.vercel.app/api/my청약', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        alert('청약 정보를 불러오는 데 실패했습니다.');
+        return;
+      }
+
+      const data = await response.json();
+      const stockListContainer = document.querySelector('.stock-list');
+
+      data.stocks.forEach(stock => {
+        const stockItem = document.createElement('div');
+        stockItem.classList.add('stock-item');
+        
+        stockItem.innerHTML = `
+          <div class="stock-info">
+            <img src="${stock.logo}" alt="${stock.name}" class="stock-logo">
+            <div class="stock-details">
+              <span>종목명: ${stock.name}</span>
+              <span>청약금액: ${stock.amount}원</span>
+              <span>상장일: ${stock.listingDate}</span>
+            </div>
+          </div>
+          <button onclick="depositToAccount('${stock._id}')">내 증권계좌로 입고</button>
+        `;
+
+        stockListContainer.appendChild(stockItem);
+      });
+    });
+
+    async function depositToAccount(stockId) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('로그인 후 이용해주세요.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const response = await fetch('https://trading-pearl.vercel.app/api/deposit', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stockId })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+      } else {
+        alert('입고 처리에 실패했습니다.');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>My 청약</h1>
+  <div class="stock-list"></div>
+</body>
+</html>
