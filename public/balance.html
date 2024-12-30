@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>비상장 주식 거래 플랫폼 - 청약</title>
   <style>
-    /* 스타일 추가 */
     .stock-list {
       display: flex;
       flex-direction: column;
@@ -45,44 +44,37 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('token'); // 로컬스토리지에서 토큰 가져오기
-      console.log('토큰:', token);  // 토큰 값 확인
-      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null; // 토큰에서 username 추출
-      console.log('사용자명:', username);  // username 값 확인
+      const token = localStorage.getItem('token');
+      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null;
 
       if (username) {
         // 주식 목록을 조회하는 API 호출
-        fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`) // Vercel 배포 주소로 변경
+        fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`)
           .then(response => response.json())
           .then(data => {
             const stockListContainer = document.getElementById('stock-list');
             if (data.stocks && data.stocks.length > 0) {
-              // 주식 목록이 있을 경우
               data.stocks.forEach(stock => {
                 const stockItem = document.createElement('div');
                 stockItem.classList.add('stock-item');
                 stockItem.innerHTML = `
-                  <img src="${stock.logoUrl}" alt="${stock.name} 로고">
-                  <div>
-                    <h3>${stock.name}</h3>
-                    <p>청약금액: ${stock.assetValue}</p>
-                    <p>보유수량: ${stock.quantity}</p>
-                  </div>
+                  <img src="${stock.image}" alt="${stock.name}">
+                  <h3>${stock.name}</h3>
+                  <p>가격: ${stock.price}원</p>
                 `;
                 stockListContainer.appendChild(stockItem);
               });
             } else {
-              // 주식 목록이 없을 경우
-              stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
+              stockListContainer.innerHTML = '<p>현재 거래 가능한 주식이 없습니다.</p>';
             }
           })
           .catch(error => {
-            console.error('주식 목록 불러오기 오류:', error);
+            console.error('주식 목록 조회 오류:', error);
+            alert('주식 목록을 가져오는 데 문제가 발생했습니다.');
           });
       } else {
-        // 로그인되지 않았을 경우
-        alert('로그인 후 사용 가능합니다.');
-        window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
+        alert('로그인 후 이용해 주세요.');
+        window.location.href = 'login.html';
       }
     });
   </script>
