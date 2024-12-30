@@ -97,30 +97,45 @@
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('token');
-      const welcomeMessage = document.getElementById('welcome-message');
-      const buttonContainer = document.querySelector('.button-container');
+  const token = localStorage.getItem('token');
+  const welcomeMessage = document.getElementById('welcome-message');
+  const buttonContainer = document.querySelector('.button-container');
 
-      if (token) {
-        const base64Payload = token.split('.')[1];
-        const payload = JSON.parse(atob(base64Payload));
-        const name = decodeURIComponent(payload.name);
-        welcomeMessage.textContent = `${name}님 반갑습니다!`;
-        buttonContainer.innerHTML = `<button class="logout-btn" onclick="logout()">로그아웃</button>`;
-      } else {
-        welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
-        buttonContainer.innerHTML = `
-          <button onclick="window.location.href='login.html'">로그인</button>
-          <button onclick="window.location.href='signup.html'">회원가입</button>
-        `;
-      }
-    });
+  if (token) {
+    try {
+      const base64Url = token.split('.')[1]; // JWT의 페이로드
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
+          .join('')
+      );
 
-    function logout() {
-      localStorage.removeItem('token');
-      alert('로그아웃되었습니다.');
-      window.location.reload();
+      const { name } = JSON.parse(jsonPayload); // JSON으로 변환
+      welcomeMessage.textContent = `${name}님 반갑습니다!`;
+      buttonContainer.innerHTML = `
+        <button class="logout-btn" onclick="logout()">로그아웃</button>
+      `;
+    } catch (error) {
+      console.error('JWT 디코딩 오류:', error);
+      welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
     }
+  } else {
+    welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
+    buttonContainer.innerHTML = `
+      <button onclick="window.location.href='login.html'">로그인</button>
+      <button onclick="window.location.href='signup.html'">회원가입</button>
+    `;
+  }
+});
+
+function logout() {
+  localStorage.removeItem('token');
+  alert('로그아웃되었습니다.');
+  window.location.reload();
+}
+
   </script>
 </head>
 <body>
