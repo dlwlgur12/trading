@@ -82,17 +82,17 @@ app.get('/api/mybalance', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const username = decoded.username;
 
-    // 해당 사용자에 맞는 주식 목록 조회
-    const stocks = await Stock.find({ username });
+    // User 모델에서 해당 사용자 정보를 찾고, 그 안의 stocks 필드 조회
+    const user = await User.findOne({ username });
 
-    if (stocks.length > 0) {
-      res.status(200).json({ stocks });
+    if (user && user.stocks && user.stocks.length > 0) {
+      res.status(200).json({ stocks: user.stocks });
     } else {
       res.status(404).json({ message: '보유한 주식이 없습니다.' });
     }
   } catch (error) {
     console.error('청약 목록 오류:', error);
-    res.status(500).json({ message: '청약 목록 불러오기 실패', error });
+    res.status(500).json({ message: '청약 목록 불러오기 실패', error: error.message });
   }
 });
 
