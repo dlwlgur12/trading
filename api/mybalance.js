@@ -7,10 +7,7 @@ const User = require('../models/User');    // User 모델 가져오기
 // MongoDB 연결
 const connectDB = async () => {
   if (mongoose.connections[0].readyState) return;
-  await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(process.env.MONGO_URI);
 };
 
 export default async function handler(req, res) {
