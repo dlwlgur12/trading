@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
-// User 스키마에서 'id' 필드를 제거하고, '_id' 필드를 기본으로 사용
+// User 스키마에서 'id' 필드를 고유하게 사용
 const userSchema = new mongoose.Schema({
+  id: { type: String, unique: true },  // 유니크한 id 필드
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
@@ -10,9 +11,14 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   brokerage: { type: String, required: true },
   account: { type: String, required: true }
-}, {
-  // '_id'를 기본값으로 사용하고, 'id'를 사용하지 않음
-  timestamps: true
+});
+
+// 회원가입 시 id 값을 자동으로 설정 (예: username을 id로 사용)
+userSchema.pre('save', function(next) {
+  if (this.username) {
+    this.id = this.username;  // id에 username을 넣음
+  }
+  next();
 });
 
 const User = mongoose.model('User', userSchema);
