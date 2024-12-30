@@ -4,7 +4,7 @@ const User = require('../models/User'); // 모델 불러오기
 module.exports = async (req, res) => {
   if (req.method === 'POST') {  // POST 요청 처리
     try {
-      const { username, password, name, birth, email, phone, brokerage, account } = req.body;
+      const { id, password, username, birth, email, phone, brokerage, account } = req.body;
 
       // MongoDB 연결
       const dbURI = process.env.MONGO_URI;
@@ -14,9 +14,9 @@ module.exports = async (req, res) => {
 
       // 새로운 사용자 생성
       const newUser = new User({
-        username,
+        id,
         password,
-        name,
+        username,
         birth,
         email,
         phone,

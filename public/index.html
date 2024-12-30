@@ -116,8 +116,8 @@
   const buttonContainer = document.querySelector('.button-container');
 
   if (token) {
-    const { name } = JSON.parse(atob(token.split('.')[1])); // JWT payload에서 이름 추출
-    welcomeMessage.textContent = `${name}님 반갑습니다!`;  // 이름 표시
+    const { username } = JSON.parse(atob(token.split('.')[1])); // JWT payload에서 이름 추출
+    welcomeMessage.textContent = `${username}님 반갑습니다!`;  // 이름 표시
     buttonContainer.innerHTML = `
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     `;

@@ -40,7 +40,7 @@
   <script>
     async function handleLogin(event) {
       event.preventDefault();
-      const username = document.getElementById('login-username').value;
+      const id = document.getElementById('login-id').value;
       const password = document.getElementById('login-password').value;
 
       try {
@@ -49,7 +49,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify({ id, password }),
         });
 
         if (!response.ok) {
@@ -73,7 +73,7 @@
   <h1>로그인</h1>
 
   <form onsubmit="handleLogin(event)">
-    <input type="text" id="login-username" placeholder="아이디를 입력하세요" required>
+    <input type="text" id="login-id" placeholder="아이디를 입력하세요" required>
     <input type="password" id="login-password" placeholder="비밀번호를 입력하세요" required>
     <button type="submit">로그인</button>
   </form>

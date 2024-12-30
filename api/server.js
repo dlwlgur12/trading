@@ -39,13 +39,13 @@ app.use((req, res, next) => {
 // 회원가입 처리 라우트
 app.post('/signup', async (req, res) => {
   try {
-    const { username, password, name, birth, email, phone, brokerage, account } = req.body;
+    const { id, password, username, birth, email, phone, brokerage, account } = req.body;
 
     // 새로운 사용자 생성
     const newUser = new User({
-      username,
+      id,
       password,
-      name,
+      username,
       birth,
       email,
       phone,
