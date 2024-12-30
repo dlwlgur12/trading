@@ -13,13 +13,23 @@
       const data = Object.fromEntries(formData.entries()); // FormData를 객체로 변환
 
       // 서버로 데이터 전송
-fetch('https://trading-pearl.vercel.app/api/signup', {  // Vercel 배포된 서버의 API 경로로 변경
+      fetch('https://trading-pearl.vercel.app/api/signup', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(data), // 데이터를 JSON 형식으로 서버에 전송
+  body: JSON.stringify({
+    username: 'example',
+    password: 'password123',
+    name: 'John Doe',
+    birth: '1990-01-01',
+    email: 'john@example.com',
+    phone: '010-1234-5678',
+    brokerage: 'Example Brokerage',
+    account: '123-456-7890'
+  }),
 })
+
 .then(response => response.json())
 .then(data => {
   if (data.message) {
