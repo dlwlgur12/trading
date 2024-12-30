@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // CORS 모듈 추가
-require('dotenv').config(); // .env 파일에서 환경 변수 로드
-const User = require('./models/User');  // User 모델 불러오기
+const cors = require('cors');
+require('dotenv').config(); // 환경 변수 로드
+const User = require('../models/User');  // User 모델 불러오기
+const Stock = require('../models/Stock');  // Stock 모델 불러오기
 const path = require('path');  // path 모듈 추가
 
 const app = express();
@@ -47,7 +48,6 @@ app.post('/signup', async (req, res) => {
 
     // 사용자 저장 (users 컬렉션에 저장)
     await newUser.save();
-    // 회원가입 완료 메시지 및 로그인 페이지로 리다이렉트
     res.status(200).json({ message: '회원가입이 완료되었습니다.', redirect: 'https://trading-pearl.vercel.app/login.html' });
   } catch (error) {
     console.error('회원가입 오류:', error);
@@ -55,10 +55,29 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-
 // 로그인 페이지 라우트
 app.get('/login.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'login.html'));  // login.html 파일 경로
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// 청약 목록 GET 요청 처리 (Stock 데이터 반환)
+app.get('/api/my청약', async (req, res) => {
+  try {
+    // 사용자 인증 (JWT 확인)
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: '인증이 필요합니다.' });
+    }
+
+    // MongoDB에서 청약 목록을 가져옵니다.
+    const stocks = await Stock.find(); 
+
+    // 청약 목록을 클라이언트에 반환
+    res.status(200).json({ stocks });
+  } catch (error) {
+    console.error('청약 목록 불러오기 오류:', error);
+    res.status(500).json({ message: '청약 목록을 불러오는 데 실패했습니다.', error });
+  }
 });
 
 // 서버 실행
