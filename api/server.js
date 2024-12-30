@@ -82,8 +82,11 @@ app.get('/api/mybalance', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const username = decoded.username;
 
-    // User 컬렉션에서 주식 목록 조회
+    // 해당 사용자에 맞는 주식 목록 조회
     const user = await User.findOne({ username });
+
+    // 주식 목록 확인
+    console.log('주식 목록:', user ? user.stocks : '사용자 없음');
 
     if (user && user.stocks && user.stocks.length > 0) {
       res.status(200).json({ stocks: user.stocks });
@@ -95,7 +98,6 @@ app.get('/api/mybalance', async (req, res) => {
     res.status(500).json({ message: '청약 목록 불러오기 실패', error });
   }
 });
-
 
 app.listen(port, () => {
   console.log(`서버가 http://localhost:${port}에서 실행 중입니다.`);
