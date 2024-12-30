@@ -18,25 +18,29 @@ mongoose.connect(process.env.MONGO_URI)
 
 // 회원가입 처리 라우트
 app.post('/api/signup', async (req, res) => {
-  try {
-    const { username, password, name, birth, email, phone, brokerage, account } = req.body;
-
-    const newUser = new User({
-      username,
-      password,
-      name,
-      birth,
-      email,
-      phone,
-      brokerage,
-      account,
-    });
-
-    await newUser.save();
-    res.status(200).json({ message: '회원가입이 완료되었습니다.', redirect: 'https://trading-pearl.vercel.app/login.html' });
-  } catch (error) {
-    res.status(500).json({ message: '회원가입 실패', error });
-  }
-});
+    try {
+      const { username, password, name, birth, email, phone, brokerage, account } = req.body;
+  
+      // 새로운 사용자 생성
+      const newUser = new User({
+        username,
+        password,
+        name,
+        birth,
+        email,
+        phone,
+        brokerage,
+        account
+      });
+  
+      // 사용자 저장 (users 컬렉션에 저장)
+      await newUser.save();
+      res.status(200).json({ message: '회원가입이 완료되었습니다.', redirect: 'https://trading-pearl.vercel.app/login.html' });
+    } catch (error) {
+      console.error('회원가입 오류 발생:', error);  // 오류 세부 사항 출력
+      res.status(500).json({ message: '회원가입 실패', error: error.message });  // 에러 메시지 출력
+    }
+  });
+  
 
 module.exports = app;
