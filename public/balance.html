@@ -61,7 +61,7 @@
           document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
 
           // 주식 목록을 조회하는 API 호출
-          fetch(`https://trading-pearl.vercel.app/api//getStocks?username=${username}`)
+          fetch(`https://trading-pearl.vercel.app/api/getStocks?username=${username}`)
             .then(response => response.json())
             .then(data => {
               const stockListContainer = document.getElementById('stock-list');
