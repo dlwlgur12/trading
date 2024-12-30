@@ -61,7 +61,7 @@ app.get('/login.html', (req, res) => {
 });
 
 // 청약 목록 GET 요청 처리 (Stock 데이터 반환)
-app.get('/api/my청약', async (req, res) => {
+app.get('/api/mybalance', async (req, res) => {
   try {
     // 사용자 인증 (JWT 확인)
     const token = req.headers['authorization']?.split(' ')[1];
