@@ -70,90 +70,45 @@
       width: 120px;
       margin-bottom: 40px;
     }
-
-    .content {
-      max-width: 800px;
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-top: 40px;
-      text-align: left;
-      color: #34495e;
-    }
-
-    nav {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 100%;
-      text-align: center;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    nav a {
-      color: #2980b9;
-      font-size: 1.2rem;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    nav a:hover {
-      color: #2c3e50;
-    }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const token = localStorage.getItem('token');
       const welcomeMessage = document.getElementById('welcome-message');
-      const buttonContainer = document.querySelector('.button-container');
+      const logoutButton = document.getElementById('logout-btn');
 
       if (token) {
-        const { name } = JSON.parse(atob(token.split('.')[1])); // JWT payload에서 이름 추출
-        welcomeMessage.textContent = `${name}님 반갑습니다!`;
-        buttonContainer.innerHTML = `
-          <button class="logout-btn" onclick="logout()">로그아웃</button>
-        `;
+        try {
+          const decoded = JSON.parse(atob(token.split('.')[1]));
+          const username = decoded.username || '사용자';
+          welcomeMessage.textContent = `${username}님, 환영합니다!`;
+
+          logoutButton.style.display = 'block';  // 로그아웃 버튼 표시
+        } catch (error) {
+          console.error('JWT 디코딩 오류:', error);
+          alert('로그인 정보가 유효하지 않습니다.');
+          window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
+        }
       } else {
-        welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
-        buttonContainer.innerHTML = `
-          <button onclick="window.location.href='login.html'">로그인</button>
-          <button onclick="window.location.href='signup.html'">회원가입</button>
-        `;
+        alert('로그인 후 사용 가능합니다.');
+        window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
       }
     });
 
     function logout() {
       localStorage.removeItem('token');
       alert('로그아웃되었습니다.');
-      window.location.reload();
+      window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
     }
   </script>
 </head>
 <body>
-  <img src="logo.png" alt="Platform Logo" class="platform-logo">
+  <img src="logo.png" alt="플랫폼 로고" class="platform-logo">
   <h1>비상장 주식 거래 플랫폼</h1>
-
-  <nav>
-    <ul>
-      <li><a href="/">홈</a></li>
-      <li><a href="/balance.html">my청약</a></li>
-    </ul>
-  </nav>
-
   <div id="welcome-message"></div>
-  <div class="button-container"></div>
-
-  <div class="content">
-    <h2>비상장 주식 거래를 시작해보세요!</h2>
-    <p>로그인 후, 다양한 비상장 주식에 대한 정보를 확인하고 거래를 시작할 수 있습니다.</p>
+  <div class="button-container">
+    <button onclick="window.location.href = 'balance.html'">청약 페이지</button>
+    <button id="logout-btn" class="logout-btn" onclick="logout()" style="display:none;">로그아웃</button>
   </div>
 </body>
 </html>
