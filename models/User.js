@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },  // 고유한 username
+  id: { type: String, required: true, unique: true },  // 고유한 id 필드
+  username: { type: String, required: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
   birth: { type: String, required: true },
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
   account: { type: String, required: true }
 });
 
-// 'id' 필드를 사용하지 않음, MongoDB는 기본적으로 '_id' 필드를 자동 생성
+// 'id' 필드를 유니크한 값으로 관리
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
