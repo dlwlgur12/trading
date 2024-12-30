@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 비상장 주식 거래 플랫폼</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        input {
+            margin: 10px;
+            padding: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        button[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>로그인</h1>
+
+    <form action="/login" method="POST">
+        <label for="login-email">이메일:</label>
+        <input type="email" id="login-email" placeholder="이메일을 입력하세요" required>
+
+        <label for="login-password">비밀번호:</label>
+        <input type="password" id="login-password" placeholder="비밀번호를 입력하세요" required>
+
+        <button type="submit">로그인</button>
+    </form>
+
+    <p>계정이 없으신가요? <a href="signup.html">회원가입</a></p>
+
+</body>
+</html>
