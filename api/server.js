@@ -55,6 +55,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+
 // 로그인 페이지 라우트
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));  // login.html 파일 경로
