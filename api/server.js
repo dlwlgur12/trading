@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const jwt = require('jsonwebtoken'); // JWT 인증을 위한 라이브러리 추가
 require('dotenv').config(); // 환경 변수 로드
 const User = require('../models/User');  // User 모델 불러오기
 const Stock = require('../models/Stock');  // Stock 모델 불러오기
@@ -28,6 +29,12 @@ mongoose.connect(dbURI)
 // 미들웨어 설정
 app.use(bodyParser.json());  // JSON 형식의 요청 본문 처리
 app.use(bodyParser.urlencoded({ extended: true })); // URL-encoded 형식 처리
+
+// 모든 응답에 UTF-8 인코딩 설정
+app.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+  next();
+});
 
 // 회원가입 처리 라우트
 app.post('/signup', async (req, res) => {
@@ -60,15 +67,27 @@ app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
 
-// 청약 목록 GET 요청 처리 (Stock 데이터 반환)
-app.get('/api/mybalance', async (req, res) => {
-  try {
-    // 사용자 인증 (JWT 확인)
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: '인증이 필요합니다.' });
-    }
+// JWT 토큰 인증 미들웨어
+const authenticateJWT = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Bearer <token>
 
+  if (!token) {
+    return res.status(401).json({ message: '인증이 필요합니다.' });
+  }
+
+  // JWT 토큰 검증
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: '유효하지 않은 토큰입니다.' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// 청약 목록 GET 요청 처리 (Stock 데이터 반환)
+app.get('/api/mybalance', authenticateJWT, async (req, res) => {
+  try {
     // MongoDB에서 청약 목록을 가져옵니다.
     const stocks = await Stock.find(); 
 
