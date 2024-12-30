@@ -20,14 +20,14 @@ module.exports = async (req, res) => {
         return res.status(401).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
       }
 
-      // JWT 생성 (로그인 상태 유지)
+      // JWT 생성
       const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       // 성공적으로 로그인된 경우
-      res.status(200).json({ 
+      res.status(200).json({
         message: `${user.name}님, 로그인되었습니다.`,
-        token, 
-        redirect: 'https://trading-pearl.vercel.app/' 
+        token,
+        redirect: 'https://trading-pearl.vercel.app/'
       });
     } catch (error) {
       console.error('로그인 오류:', error);
