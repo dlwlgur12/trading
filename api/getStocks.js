@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       return res.status(405).json({ message: 'Method Not Allowed' });
     }
   } catch (error) {
-    console.error('서버 오류:', error);
+    console.error('서버 오류:', error);  // 오류 로그 추가
     return res.status(500).json({ message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
   } finally {
     await client.close();
