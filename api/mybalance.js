@@ -1,4 +1,3 @@
-// api/mybalance.js
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const Stock = require('../models/Stock');  // Stock 모델 가져오기
@@ -35,7 +34,8 @@ export default async function handler(req, res) {
       res.status(404).json({ message: '보유한 주식이 없습니다.' });
     }
   } catch (error) {
+    // 오류를 더 구체적으로 처리하여 로그와 응답에 포함
     console.error('청약 목록 오류:', error);
-    res.status(500).json({ message: '청약 목록 불러오기 실패', error });
+    res.status(500).json({ message: '청약 목록 불러오기 실패', error: error.message });
   }
 }
