@@ -14,6 +14,10 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.header('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
 
 const dbURI = process.env.MONGO_URI;
 mongoose
@@ -55,10 +59,11 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
     }
 
+    // `name` 필드만 UTF-8 인코딩 처리
     const payload = {
       id: user._id,
       username: user.username,
-      name: encodeURIComponent(user.name), // UTF-8 인코딩
+      name: encodeURIComponent(user.name), // 여기서만 인코딩
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -68,6 +73,7 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: '로그인 실패', error });
   }
 });
+
 
 // 청약 목록 반환
 app.get('/api/mybalance', async (req, res) => {
