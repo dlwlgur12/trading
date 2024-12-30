@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>비상장 주식 거래 플랫폼 - 청약</title>
   <style>
-    /* 스타일 추가 */
     .stock-list {
       display: flex;
       flex-direction: column;
@@ -49,35 +48,32 @@
       const token = localStorage.getItem('token');
       if (!token) {
         alert('로그인 후 사용 가능합니다.');
-        window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
+        window.location.href = 'login.html';
       } else {
         try {
-          // JWT 디코딩
           const decoded = JSON.parse(atob(token.split('.')[1]));
-          const username = decoded.username || '사용자';  // username이 없다면 '사용자'로 대체
+          const username = decoded.username || '사용자';
 
-          // 사용자 이름 표시
           document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
 
-          // 주식 목록을 조회하는 API 호출
+          // 주식 목록 조회 API 호출
           fetch('https://trading-pearl.vercel.app/api/mybalance', {
             method: 'GET',
             headers: {
-              'Authorization': `Bearer ${token}`,  // Authorization 헤더에 JWT 추가
+              'Authorization': `Bearer ${token}`,
             },
           })
             .then(response => response.json())
             .then(data => {
               const stockListContainer = document.getElementById('stock-list');
               if (data.stocks && data.stocks.length > 0) {
-                // 주식 목록이 있을 경우
                 data.stocks.forEach(stock => {
                   const stockItem = document.createElement('div');
                   stockItem.classList.add('stock-item');
                   stockItem.innerHTML = `
-                    <img src="${stock.logoUrl}" alt="${stock.name} 로고">
+                    <img src="${stock.logoUrl}" alt="${stock.stockName} 로고">
                     <div>
-                      <h3>${stock.name}</h3>
+                      <h3>${stock.stockName}</h3>
                       <p>청약금액: ${stock.assetValue}</p>
                       <p>보유수량: ${stock.quantity}</p>
                     </div>
@@ -85,7 +81,6 @@
                   stockListContainer.appendChild(stockItem);
                 });
               } else {
-                // 주식 목록이 없을 경우
                 stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
               }
             })

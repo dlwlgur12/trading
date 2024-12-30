@@ -59,11 +59,10 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' });
     }
 
-    // JWT Payload에 한글을 UTF-8 인코딩
     const payload = {
       id: user._id,
       username: user.username,
-      name: encodeURIComponent(user.name), // UTF-8 인코딩
+      name: encodeURIComponent(user.name),
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -74,14 +73,14 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// 청약 목록 반환 (사용자별 주식 목록)
+// 사용자별 주식 목록 반환
 app.get('/api/mybalance', async (req, res) => {
   try {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) return res.status(401).json({ message: '인증이 필요합니다.' });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const username = decoded.username;  // JWT에서 사용자 이름 추출
+    const username = decoded.username;
 
     // 해당 사용자에 맞는 주식 목록 조회
     const stocks = await Stock.find({ username });
@@ -97,7 +96,6 @@ app.get('/api/mybalance', async (req, res) => {
   }
 });
 
-// 서버 실행
 app.listen(port, () => {
   console.log(`서버가 http://localhost:${port}에서 실행 중입니다.`);
 });
