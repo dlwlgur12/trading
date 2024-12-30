@@ -47,12 +47,17 @@ app.post('/signup', async (req, res) => {
 
     // 사용자 저장 (users 컬렉션에 저장)
     await newUser.save();
-    // 회원가입 완료 메시지 및 로컬 경로로 리다이렉트
-    res.status(200).json({ message: '회원가입이 완료되었습니다.', redirect: 'file:///C:/Users/fdgdfg/Desktop/stock-trading/login.html' });
+    // 회원가입 완료 메시지 및 로그인 페이지로 리다이렉트
+    res.status(200).json({ message: '회원가입이 완료되었습니다.', redirect: 'https://trading-pearl.vercel.app/login.html' });
   } catch (error) {
     console.error('회원가입 오류:', error);
     res.status(500).json({ message: '회원가입 실패', error });
   }
+});
+
+// 로그인 페이지 라우트
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));  // login.html 파일 경로
 });
 
 // 서버 실행
