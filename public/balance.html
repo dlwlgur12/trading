@@ -3,85 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>나의 청약 페이지</title>
+  <title>비상장 주식 거래 플랫폼 - 청약</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f7fc;
-      color: #333;
-      margin: 0;
-      padding: 0;
+    /* 스타일 추가 */
+    .stock-list {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2rem;
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-
-    .stocks-container {
-      max-width: 800px;
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      gap: 20px;
       margin-top: 20px;
-      text-align: left;
-      color: #34495e;
-      width: 100%;
     }
 
     .stock-item {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #ddd;
-      padding: 15px 0;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .stock-item img {
-      width: 50px;
-      height: 50px;
-      margin-right: 20px;
+      width: 40px;
+      height: 40px;
     }
 
     .stock-item h3 {
       margin: 0;
-      font-size: 1.2rem;
     }
 
     .stock-item p {
-      margin: 5px 0;
-    }
-
-    .no-stocks {
-      font-size: 1.2rem;
-      color: #e74c3c;
-      margin-top: 20px;
-    }
-
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
+      margin: 0;
+      font-size: 14px;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <h1>나의 청약 페이지</h1>
+  <h1>청약 목록</h1>
+  <div id="stock-list" class="stock-list"></div>
 
-  <div class
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null;
+
+      if (username) {
+    fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`) // Vercel 배포 주소로 변경
+      .then(response => response.json())
+      .then(data => {
+        const stockListContainer = document.getElementById('stock-list');
+        if (data.stocks && data.stocks.length > 0) {
+          data.stocks.forEach(stock => {
+            const stockItem = document.createElement('div');
+            stockItem.classList.add('stock-item');
+            stockItem.innerHTML = `
+              <img src="${stock.logoUrl}" alt="${stock.name} 로고">
+              <div>
+                <h3>${stock.name}</h3>
+                <p>청약금액: ${stock.assetValue}</p>
+                <p>보유수량: ${stock.quantity}</p>
+              </div>
+            `;
+            stockListContainer.appendChild(stockItem);
+          });
+        } else {
+          stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
+        }
+      })
+      .catch(error => {
+        console.error('주식 목록 불러오기 오류:', error);
+      });
+  } else {
+    alert('로그인 후 사용 가능합니다.');
+  }
+});
+  </script>
+</body>
+</html>
