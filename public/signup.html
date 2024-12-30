@@ -12,21 +12,20 @@
       const formData = new FormData(event.target); // 폼 데이터 수집
       const data = Object.fromEntries(formData.entries()); // FormData를 객체로 변환
 
-      // 서버로 데이터 전송
-      fetch('https://trading-pearl.vercel.app/api/signup', {  // Vercel 배포된 서버의 API 경로로 변경
+      fetch('https://trading-pearl.vercel.app/api/signup', {  // Vercel의 서버리스 함수 URL로 수정
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
-  body: JSON.stringify(data), // 데이터를 JSON 형식으로 서버에 전송
+  body: JSON.stringify(data),  // 데이터는 JSON 형식으로 전송
 })
 .then(response => response.json())
 .then(data => {
   if (data.message) {
-    alert(data.message); // 회원가입 완료 메시지
+    alert(data.message);  // 회원가입 완료 메시지
     setTimeout(() => {
-      window.location.href = data.redirect; // 로그인 페이지로 리다이렉트
-    }, 1000); // 1초 후 로그인 페이지로 이동
+      window.location.href = data.redirect;  // 로그인 페이지로 리다이렉트
+    }, 1000);  // 1초 후 로그인 페이지로 이동
   } else {
     alert('회원가입에 실패했습니다. 다시 시도해주세요.');
   }
@@ -35,7 +34,6 @@
   console.error('회원가입 오류:', error);
   alert('회원가입에 실패했습니다. 다시 시도해주세요.');
 });
-
 
     }
   </script>
