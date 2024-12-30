@@ -1,0 +1,49 @@
+<!-- mybalance.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My 청약</title>
+  <script>
+    // 예시: 주식 추가 함수
+    const addStock = async (userId, stock) => {
+      try {
+        const response = await fetch('/addStock', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId, stock })
+        });
+
+        const data = await response.json();
+        if (data.message === '종목이 추가되었습니다.') {
+          alert('새 종목이 추가되었습니다!');
+        } else {
+          alert('종목 추가 실패');
+        }
+      } catch (error) {
+        console.error('에러 발생:', error);
+      }
+    };
+
+    // 예시: 사용자가 추가할 종목 정보
+    const newStock = {
+      symbol: '애플',
+      name: 'Apple',
+      logoUrl: 'https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png',
+      quantity: 20,
+      assetValue: 300000
+    };
+
+    // 예시로 userId와 종목 정보 전달하여 추가
+    const userId = 'dlwlgur90'; // 로그인한 사용자의 ID로 대체
+    addStock(userId, newStock);
+  </script>
+</head>
+<body>
+  <h1>My 청약</h1>
+  <button onclick="addStock('dlwlgur90', newStock)">종목 추가</button>
+</body>
+</html>
