@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const Stock = require('../models/Stock');  // Stock 모델 가져오기
 const User = require('../models/User');    // User 모델 가져오기
 
 // MongoDB 연결
@@ -25,11 +24,11 @@ export default async function handler(req, res) {
     // MongoDB 연결
     await connectDB();
 
-    // 해당 사용자에 맞는 주식 목록 조회
-    const stocks = await Stock.find({ username });
+    // 해당 사용자 정보를 조회 (stocks 필드 포함)
+    const user = await User.findOne({ username });
 
-    if (stocks.length > 0) {
-      res.status(200).json({ stocks });
+    if (user && user.stocks && user.stocks.length > 0) {
+      res.status(200).json({ stocks: user.stocks });
     } else {
       res.status(404).json({ message: '보유한 주식이 없습니다.' });
     }
