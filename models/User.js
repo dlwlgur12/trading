@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 // 사용자 스키마 정의
 const userSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  username: { type: String, required: true },
+  name: { type: String, required: true },
   birth: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },

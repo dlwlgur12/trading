@@ -47,54 +47,54 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('로그인 후 사용 가능합니다.');
-    window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
-  } else {
-    try {
-      // JWT 디코딩
-      const decoded = JSON.parse(atob(token.split('.')[1]));
-      const username = decoded.username || '사용자';  // username이 없다면 '사용자'로 대체
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('로그인 후 사용 가능합니다.');
+        window.location.href = 'login.html';  // 로그인 페이지로 리다이렉트
+      } else {
+        try {
+          // JWT 디코딩
+          const decoded = JSON.parse(atob(token.split('.')[1]));
+          const username = decoded.username || '사용자';  // username이 없다면 '사용자'로 대체
 
-      // 사용자 이름 표시
-      document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
+          // 사용자 이름 표시
+          document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
 
-      // 주식 목록을 조회하는 API 호출
-      fetch(`https://trading-pearl.vercel.app/api/getStocks?username=${username}`)
-        .then(response => response.json())
-        .then(data => {
-          const stockListContainer = document.getElementById('stock-list');
-          if (data.stocks && data.stocks.length > 0) {
-            // 주식 목록이 있을 경우
-            data.stocks.forEach(stock => {
-              const stockItem = document.createElement('div');
-              stockItem.classList.add('stock-item');
-              stockItem.innerHTML = `
-                <img src="${stock.logoUrl}" alt="${stock.name} 로고">
-                <div>
-                  <h3>${stock.name}</h3>
-                  <p>청약금액: ${stock.assetValue}</p>
-                  <p>보유수량: ${stock.quantity}</p>
-                </div>
-              `;
-              stockListContainer.appendChild(stockItem);
+          // 주식 목록을 조회하는 API 호출
+          fetch(`https://trading-pearl.vercel.app/api/getStocks?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+              const stockListContainer = document.getElementById('stock-list');
+              if (data.stocks && data.stocks.length > 0) {
+                // 주식 목록이 있을 경우
+                data.stocks.forEach(stock => {
+                  const stockItem = document.createElement('div');
+                  stockItem.classList.add('stock-item');
+                  stockItem.innerHTML = `
+                    <img src="${stock.logoUrl}" alt="${stock.name} 로고">
+                    <div>
+                      <h3>${stock.name}</h3>
+                      <p>청약금액: ${stock.assetValue}</p>
+                      <p>보유수량: ${stock.quantity}</p>
+                    </div>
+                  `;
+                  stockListContainer.appendChild(stockItem);
+                });
+              } else {
+                // 주식 목록이 없을 경우
+                stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
+              }
+            })
+            .catch(error => {
+              console.error('주식 목록 불러오기 오류:', error);
             });
-          } else {
-            // 주식 목록이 없을 경우
-            stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
-          }
-        })
-        .catch(error => {
-          console.error('주식 목록 불러오기 오류:', error);
-        });
-    } catch (error) {
-      console.error('JWT 디코딩 오류:', error);
-      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
-      window.location.href = 'login.html';
-    }
-  }
-});
+        } catch (error) {
+          console.error('JWT 디코딩 오류:', error);
+          alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+          window.location.href = 'login.html';
+        }
+      }
+    });
   </script>
 </body>
 </html>
