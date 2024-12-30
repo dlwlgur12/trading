@@ -18,26 +18,22 @@
       height: 100vh;
       text-align: center;
     }
-
     h1 {
       font-size: 3rem;
       color: #2c3e50;
       margin-bottom: 30px;
     }
-
     #welcome-message {
       font-size: 1.5rem;
       color: #2980b9;
       margin-bottom: 20px;
     }
-
     .button-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 15px;
     }
-
     button {
       background-color: #3498db;
       color: white;
@@ -49,28 +45,22 @@
       width: 250px;
       transition: all 0.3s ease;
     }
-
     button:hover {
       background-color: #2980b9;
     }
-
     button:active {
       transform: scale(0.98);
     }
-
     .logout-btn {
       background-color: #e74c3c;
     }
-
     .logout-btn:hover {
       background-color: #c0392b;
     }
-
     .platform-logo {
       width: 120px;
       margin-bottom: 40px;
     }
-
     .content {
       max-width: 800px;
       background-color: white;
@@ -81,7 +71,6 @@
       text-align: left;
       color: #34495e;
     }
-
     nav {
       position: absolute;
       top: 20px;
@@ -89,7 +78,6 @@
       width: 100%;
       text-align: center;
     }
-
     nav ul {
       list-style: none;
       padding: 0;
@@ -97,14 +85,12 @@
       justify-content: center;
       gap: 20px;
     }
-
     nav a {
       color: #2980b9;
       font-size: 1.2rem;
       text-decoration: none;
       transition: color 0.3s ease;
     }
-
     nav a:hover {
       color: #2c3e50;
     }
@@ -116,11 +102,11 @@
       const buttonContainer = document.querySelector('.button-container');
 
       if (token) {
-        const { name } = JSON.parse(atob(token.split('.')[1])); // JWT payload에서 이름 추출
+        const base64Payload = token.split('.')[1];
+        const payload = JSON.parse(atob(base64Payload));
+        const name = decodeURIComponent(payload.name);
         welcomeMessage.textContent = `${name}님 반갑습니다!`;
-        buttonContainer.innerHTML = `
-          <button class="logout-btn" onclick="logout()">로그아웃</button>
-        `;
+        buttonContainer.innerHTML = `<button class="logout-btn" onclick="logout()">로그아웃</button>`;
       } else {
         welcomeMessage.textContent = '환영합니다! 로그인 후 거래를 시작하세요.';
         buttonContainer.innerHTML = `
