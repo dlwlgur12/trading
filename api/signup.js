@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('MongoDB 연결 실패:', err));
 
 // 회원가입 처리 라우트
-app.post('api/signup', async (req, res) => {
+app.post('/signup', async (req, res) => {
   try {
     const { username, password, name, birth, email, phone, brokerage, account } = req.body;
 
