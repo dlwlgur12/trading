@@ -82,6 +82,34 @@
       text-align: left;
       color: #34495e;
     }
+
+    /* 메뉴 스타일 */
+    nav {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: #2980b9;
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #2c3e50;
+    }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -114,6 +142,15 @@
 <body>
   <img src="logo.png" alt="Platform Logo" class="platform-logo">
   <h1>비상장 주식 거래 플랫폼</h1>
+
+  <!-- 네비게이션 메뉴 -->
+  <nav>
+    <ul>
+      <li><a href="/">홈</a></li>
+      <li><a href="my청약.html">my청약</a></li> <!-- my청약 메뉴 추가 -->
+    </ul>
+  </nav>
+
   <div id="welcome-message"></div>
   <div class="button-container"></div>
 
