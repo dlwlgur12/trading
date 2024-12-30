@@ -45,15 +45,14 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 로컬스토리지에서 토큰 가져오기
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token'); // 로컬스토리지에서 토큰 가져오기
       console.log('토큰:', token);  // 토큰 값 확인
-      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null;
+      const username = token ? JSON.parse(atob(token.split('.')[1])).username : null; // 토큰에서 username 추출
       console.log('사용자명:', username);  // username 값 확인
 
       if (username) {
         // 주식 목록을 조회하는 API 호출
-        fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`)
+        fetch(`https://trading-pearl.vercel.app/getStocks?username=${username}`) // Vercel 배포 주소로 변경
           .then(response => response.json())
           .then(data => {
             const stockListContainer = document.getElementById('stock-list');
