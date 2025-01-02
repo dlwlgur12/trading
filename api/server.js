@@ -73,17 +73,12 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// 사용자별 주식 목록 반환
+
+// 인증 없이 주식 목록 반환
 app.get('/api/mybalance', async (req, res) => {
   try {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ message: '인증이 필요합니다.' });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const username = decoded.username;
-
-    // 해당 사용자에 맞는 주식 목록 조회
-    const user = await User.findOne({ username });
+    // 인증 없이 바로 주식 목록을 반환
+    const user = await User.findOne({ username: 'default' });  // 예시로 기본 사용자 데이터 반환
 
     // 주식 목록 확인
     console.log('주식 목록:', user ? user.stocks : '사용자 없음');
@@ -98,6 +93,7 @@ app.get('/api/mybalance', async (req, res) => {
     res.status(500).json({ message: '청약 목록 불러오기 실패', error });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`서버가 http://localhost:${port}에서 실행 중입니다.`);
