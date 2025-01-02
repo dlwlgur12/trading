@@ -36,6 +36,12 @@
       font-size: 14px;
       color: #555;
     }
+
+    #welcome-message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -45,75 +51,82 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('로그인 후 사용 가능합니다.');
-    window.location.href = 'login.html';
-  } else {
-    try {
-      const decoded = JSON.parse(atob(token.split('.')[1]));
-      const now = Math.floor(Date.now() / 1000);
-
-      // 토큰 만료 여부 확인
-      if (decoded.exp < now) {
-        alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+      // 토큰을 로컬 스토리지에서 가져옵니다.
+      const token = localStorage.getItem('token');
+      
+      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      if (!token) {
+        alert('로그인 후 사용 가능합니다.');
         window.location.href = 'login.html';
         return;
       }
 
-      const username = decoded.username || '사용자';
-      document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
+      try {
+        // JWT 토큰 디코딩
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        const now = Math.floor(Date.now() / 1000);
 
-      // 주식 목록 조회 API 호출
-      fetch('https://trading-pearl.vercel.app/api/mybalance', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,  // Bearer 토큰 추가
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            if (response.status === 401) {
-              alert('인증 오류: 다시 로그인해주세요.');
-              localStorage.removeItem('token');
-              window.location.href = 'login.html';
+        // 토큰 만료 여부 확인
+        if (decoded.exp < now) {
+          alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+          localStorage.removeItem('token');
+          window.location.href = 'login.html';
+          return;
+        }
+
+        // 사용자 이름을 가져오고, 환영 메시지 표시
+        const username = decoded.username || '사용자';
+        document.getElementById('welcome-message').textContent = `${username}님, 환영합니다!`;
+
+        // 주식 목록 조회 API 호출
+        fetch('https://trading-pearl.vercel.app/api/mybalance', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,  // Bearer 토큰 추가
+          },
+        })
+          .then(response => {
+            if (!response.ok) {
+              if (response.status === 401) {
+                alert('인증 오류: 다시 로그인해주세요.');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+              }
+              throw new Error('API 호출 실패');
             }
-            throw new Error('API 호출 실패');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('받은 데이터:', data);
-          const stockListContainer = document.getElementById('stock-list');
-          if (data.stocks && data.stocks.length > 0) {
-            data.stocks.forEach(stock => {
-              const stockItem = document.createElement('div');
-              stockItem.classList.add('stock-item');
-              stockItem.innerHTML = `
-                <img src="${stock.logoUrl}" alt="${stock.stockName} 로고">
-                <div>
-                  <h3>${stock.stockName}</h3>
-                  <p>청약금액: ${stock.assetValue}</p>
-                  <p>보유수량: ${stock.quantity}</p>
-                </div>
-              `;
-              stockListContainer.appendChild(stockItem);
-            });
-          } else {
-            stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
-          }
-        })
-        .catch(error => {
-          console.error('주식 목록 불러오기 오류:', error);
-        });
-    } catch (error) {
-      console.error('JWT 디코딩 오류:', error);
-      alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
-      window.location.href = 'login.html';
-    }
-  }
-});
-
+            return response.json();
+          })
+          .then(data => {
+            console.log('받은 데이터:', data);
+            const stockListContainer = document.getElementById('stock-list');
+            if (data.stocks && data.stocks.length > 0) {
+              data.stocks.forEach(stock => {
+                const stockItem = document.createElement('div');
+                stockItem.classList.add('stock-item');
+                stockItem.innerHTML = `
+                  <img src="${stock.logoUrl}" alt="${stock.stockName} 로고">
+                  <div>
+                    <h3>${stock.stockName}</h3>
+                    <p>청약금액: ${stock.assetValue}</p>
+                    <p>보유수량: ${stock.quantity}</p>
+                  </div>
+                `;
+                stockListContainer.appendChild(stockItem);
+              });
+            } else {
+              stockListContainer.innerHTML = '<p>보유한 주식이 없습니다.</p>';
+            }
+          })
+          .catch(error => {
+            console.error('주식 목록 불러오기 오류:', error);
+            alert('주식 목록을 불러오는 데 실패했습니다. 다시 시도해주세요.');
+          });
+      } catch (error) {
+        console.error('JWT 디코딩 오류:', error);
+        alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
+        window.location.href = 'login.html';
+      }
+    });
   </script>
 </body>
 </html>
